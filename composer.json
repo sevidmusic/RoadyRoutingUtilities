@@ -22,8 +22,8 @@
     },
     "autoload": {
         "psr-4": {
-            "roady\\": "src/",
-            "tests\\": "tests/"
+            "Darling\\RoadyRoutingUtilities\\": "src/",
+            "Darling\\RoadyRoutingUtilities\\tests\\": "tests/"
         }
     },
     "require-dev": {
