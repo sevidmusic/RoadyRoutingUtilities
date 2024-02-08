@@ -2,6 +2,8 @@
 
 namespace Darling\RoadyRoutingUtilities\interfaces\requests;
 
+use Darling\PHPTextTypes\interfaces\strings\Name;
+
 /**
  * Description of this interface.
  *
@@ -13,6 +15,15 @@ namespace Darling\RoadyRoutingUtilities\interfaces\requests;
  */
 interface Request
 {
+
+
+    /**
+     * Return the Name of the Request.
+     *
+     * @return Name
+     *
+     */
+    public function name(): Name;
 
 }
 
