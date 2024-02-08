@@ -2,6 +2,22 @@
 
 namespace Darling\RoadyRoutingUtilities\tests\interfaces\requests;
 
+use \Darling\PHPWebPaths\classes\paths\parts\url\Fragment as FragmentInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\Query as QueryInstance;
+use \Darling\PHPTextTypes\classes\strings\SafeText as SafeTextInstance;
+use \Darling\PHPTextTypes\interfaces\collections\SafeTextCollection;
+use \Darling\PHPTextTypes\classes\collections\SafeTextCollection as SafeTextCollectionInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\Path as PathInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\Port as PortInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\TopLevelDomainName as TopLevelDomainNameInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\DomainName as DomainNameInstance;
+use \Darling\PHPWebPaths\enumerations\paths\parts\url\Scheme;
+use \Darling\PHPWebPaths\classes\paths\Domain as DomainInstance;
+use \Darling\PHPWebPaths\interfaces\paths\Url;
+use \Darling\PHPWebPaths\classes\paths\Url as UrlInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\Authority as AuthorityInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\Host as HostInstance;
+use \Darling\PHPWebPaths\classes\paths\parts\url\SubDomainName as SubDomainNameInstance;
 use \Darling\PHPTextTypes\classes\strings\Name as NameInstance;
 use \Darling\PHPTextTypes\classes\strings\Text as TextInstance;
 use \Darling\PHPTextTypes\interfaces\strings\Name;
@@ -18,51 +34,79 @@ trait RequestTestTrait
 {
 
     /**
-     * Default Host used if host cannot be determined from
-     * $testUrlString.
+     * @var non-empty-string $defaultHost Default Host used if host
+     *                                    cannot be determined from
+     *                                    $testUrlString.
      */
     private string $defaultHost = 'localhost';
 
     /**
-     * Name of the url query parameter used to determine the Name
-     * that is expected to be assigned to the Request.
+     * @var non-empty-string $requestParameterName Name of the url
+     *                                             query parameter
+     *                                             used to determine
+     *                                             the Name that is
+     *                                             expected to be
+     *                                             assigned to the
+     *                                             Request.
      */
     private string $requestParameterName = 'request';
 
     /**
-     * The value that will be assigned to $_SERVER['HTTPS'] if
-     * `https` is enabled.
+     * @var non-empty-string $httpsOnValue The value that will be
+     *                                     assigned to
+     *                                     $_SERVER['HTTPS'] if
+     *                                     `https` is enabled.
      */
     private string $httpsOnValue = 'on';
 
     /**
-     * Character used to separate the sub-domain, domain, and top-level
-     * domain of a url.
+     * @var non-empty-string $domainSeparator Character used to
+     *                                        separate the sub-domain,
+     *                                        domain, and top-level
+     *                                        domain of a url.
      */
     private string $domainSeparator = '.';
 
     /**
-     * Key of the `query` value in the array returned by parse_url().
+     * @var non-empty-string $queryParameterName Key of the `query`
+     *                                           value in the
+     *                                           array returned by
+     *                                           parse_url().
      */
     private string $queryParameterName = 'query';
 
     /**
-     * Name of the url query parameter used to determine the Fragment
-     * that is expected to be assigned to the Request's Url.
+     * @var non-empty-string $fragmentParameterName Name of the url
+     *                                              query parameter
+     *                                              used to determine
+     *                                              the Fragment that
+     *                                              is expected to be
+     *                                              assigned to the
+     *                                              Request's Url.
      */
     private string $fragmentParameterName = 'fragment';
 
     /**
-     * Name of the url query parameter used to determine the Scheme
-     * that is expected to be assigned to the Request's Url.
+     * @var non-empty-string $schemeParameterName Name of the url
+     *                                            query parameter used
+     *                                            to determine the
+     *                                            Scheme that is
+     *                                            expected to be
+     *                                            assigned to the
+     *                                            Request's Url.
      */
     private string $schemeParameterName = 'scheme';
 
+    /**
+     * @var string|null $testUrlString The url string to use for testing.
+     */
     private string|null $testUrlString = null;
 
     /**
-     * Default Request Name used if host cannot be determined from
-     * $testUrlString.
+     * @var non-empty-string $defaultRequestName Default Request Name
+     *                                           used if host cannot
+     *                                           be determined from
+     *                                           $testUrlString.
      */
     private string $defaultRequestName = 'homepage';
 
@@ -208,6 +252,188 @@ trait RequestTestTrait
         return $this->testUrlString;
     }
 
+    public function expectedUrl(): Url
+    {
+        $currentRequestsUrlParts = parse_url(
+            (
+                isset($this->testUrlString) && !empty($this->testUrlString)
+                ? $this->testUrlString
+                : $this->determineCurrentRequestUrlString()
+            )
+        );
+        if(is_array($currentRequestsUrlParts)) {
+            $domains = explode(
+                $this->domainSeparator,
+                $currentRequestsUrlParts['host'] ?? $this->defaultHost
+            );
+            $port = intval($currentRequestsUrlParts['port'] ?? null);
+            $path = ($currentRequestsUrlParts['path'] ?? null);
+            $query = (
+                $currentRequestsUrlParts[$this->queryParameterName]
+                ??
+                null
+            );
+            $fragment = (
+                $currentRequestsUrlParts[$this->fragmentParameterName]
+                ??
+                null
+            );
+            $scheme = match(
+                $currentRequestsUrlParts[$this->schemeParameterName]
+                ??
+                null
+            ) {
+                Scheme::HTTPS->value => Scheme::HTTPS,
+                default => Scheme::HTTP,
+            };
+
+            return match(count($domains)) {
+                1 => $this->newUrl(
+                    domainName: $domains[0],
+                    fragment: (is_string($fragment) ? $fragment : null),
+                    path: $path,
+                    port: $port,
+                    query: (is_string($query) ? $query : null),
+                    scheme: $scheme,
+                ),
+                2 => $this->newUrl(
+                    domainName: $domains[1],
+                    fragment: (is_string($fragment) ? $fragment : null),
+                    path: $path,
+                    port: $port,
+                    query: (is_string($query) ? $query : null),
+                    scheme: $scheme,
+                    subDomainName: $domains[0],
+                ),
+                3 => $this->newUrl(
+                    domainName: $domains[1],
+                    fragment: (is_string($fragment) ? $fragment : null),
+                    path: $path,
+                    port: $port,
+                    query: (is_string($query) ? $query : null),
+                    scheme: $scheme,
+                    subDomainName: $domains[0],
+                    topLevelDomainName: $domains[2],
+                ),
+                default => $this->newUrl(
+                    domainName: $this->defaultHost,
+                    fragment: (is_string($fragment) ? $fragment : null),
+                    path: $path,
+                    port: $port,
+                    query: (is_string($query) ? $query : null),
+                    scheme: $scheme,
+                ),
+            };
+        }
+        return $this->defaultUrl();
+    }
+
+    private function newUrl(
+        string $domainName,
+        string $subDomainName = null,
+        string $topLevelDomainName = null,
+        int $port = null,
+        string $path = null,
+        string $query = null,
+        string $fragment = null,
+        Scheme $scheme = null,
+    ): Url
+    {
+        return new UrlInstance(
+            domain: new DomainInstance(
+                scheme: (isset($scheme) ? $scheme : Scheme::HTTP),
+                authority: new AuthorityInstance(
+                    host: new HostInstance(
+                        subDomainName: (
+                            isset($subDomainName)
+                            ? new SubDomainNameInstance(
+                                new NameInstance(
+                                    new TextInstance($subDomainName)
+                                )
+                            )
+                            : null
+                        ),
+                        domainName: new DomainNameInstance(
+                            new NameInstance(
+                                new TextInstance($domainName)
+                            )
+                        ),
+                        topLevelDomainName: (
+                            isset($topLevelDomainName)
+                            ? new TopLevelDomainNameInstance(
+                                new NameInstance(
+                                    new TextInstance(
+                                        $topLevelDomainName
+                                    )
+                                )
+                            )
+                            : null
+                        ),
+                    ),
+                    port: (
+                        isset($port)
+                        ? new PortInstance($port)
+                        : null
+                    ),
+                ),
+            ),
+            path: (
+                isset($path)
+                ? new PathInstance(
+                    $this->deriveSafeTextCollectionFromPathString(
+                        $path
+                    )
+                )
+                : null
+            ),
+            query: (
+                isset($query)
+                ? new QueryInstance(new TextInstance($query))
+                : null
+            ),
+            fragment: (
+                isset($fragment)
+                ? new FragmentInstance(new TextInstance($fragment))
+                : null
+            ),
+        );
+    }
+
+    private function determineCurrentRequestUrlString(): string
+    {
+        $scheme = (
+            isset($_SERVER['HTTPS'])
+            &&
+            $_SERVER['HTTPS'] === $this->httpsOnValue
+            ? Scheme::HTTPS
+            : Scheme::HTTP
+        );
+        $host = ($_SERVER['HTTP_HOST'] ?? $this->defaultHost);
+        $uri = ($_SERVER['REQUEST_URI'] ?? '');
+        return $scheme->value . '://' . $host . $uri;
+    }
+
+    private function deriveSafeTextCollectionFromPathString(
+        string $path
+    ): SafeTextCollection
+    {
+        $pathParts = explode(DIRECTORY_SEPARATOR, $path);
+        $safeText = [];
+        foreach ($pathParts as $pathPart) {
+            if (!empty($pathPart)) {
+                $safeText[] = new SafeTextInstance(
+                    new TextInstance($pathPart)
+                );
+            }
+        }
+        return new SafeTextCollectionInstance(...$safeText);
+    }
+
+    private function defaultUrl(): Url
+    {
+        return $this->newUrl(domainName: $this->defaultHost);
+    }
+
     /**
      * Test that the name() method returns the expected Name.
      *
@@ -216,11 +442,32 @@ trait RequestTestTrait
      * @covers Request->name()
      *
      */
-    public function test_name_returns_expected_named(): void
+    public function test_name_returns_expected_name(): void
     {
         $this->assertEquals(
             $this->expectedName(),
             $this->requestTestInstance()->name(),
+            $this->testFailedMessage(
+                $this->requestTestInstance(),
+                'name',
+                'name() must return the expected Name: ' . $this->expectedName()->__toString(),
+            )
+        );
+    }
+
+    /**
+     * Test that the url() method returns the expected Url.
+     *
+     * @return void
+     *
+     * @covers Request->url()
+     *
+     */
+    public function test_url_returns_expected_url(): void
+    {
+        $this->assertEquals(
+            $this->expectedUrl(),
+            $this->requestTestInstance()->url(),
             $this->testFailedMessage(
                 $this->requestTestInstance(),
                 'name',
