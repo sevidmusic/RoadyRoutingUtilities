@@ -21,7 +21,7 @@ class RequestTest extends RoadyRoutingUtilitiesTest
 
     public function setUp(): void
     {
-        $urlStrings = [
+       $urlStrings = [
             'https://foo.bar.baz:2343/some/path/bin.html?request=specific-request&q=a&b=c#frag',
             'https://foo.bar:43/some/path/bin.html?request=specific-request&q=a&b=c#frag',
             'https://foo:17/some/path/bin.html?request=specific-request&q=a&b=c#frag',
@@ -50,6 +50,7 @@ class RequestTest extends RoadyRoutingUtilitiesTest
             'https://',
             'http://',
             '',
+             $this->randomChars(),
             null,
         ];
         $urlString = $urlStrings[array_rand($urlStrings)];
@@ -58,5 +59,6 @@ class RequestTest extends RoadyRoutingUtilitiesTest
             new Request($urlString)
         );
     }
+
 }
 

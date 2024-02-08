@@ -165,6 +165,29 @@ class Request implements RequestInterface
         return $this->defaultUrl();
     }
 
+
+    /**
+     * Return a new Url instance based on the specified parameters.
+     *
+     * @param string $domainName The domain name to assign to the Url.
+     *
+     * @param string $subDomainName The sub-domain-name to assign to the Url.
+     *
+     * @param string $topLevelDomainName The top-level-domain-name to assign to the Url.
+     *
+     * @param int $port The port to assign to the Url.
+     *
+     * @param string $path The path to assign to the Url.
+     *
+     * @param string $query The query to assign to the Url.
+     *
+     * @param string $fragment The fragment to assign to the Url.
+     *
+     * @param Scheme $scheme The Scheme to assign to the Url.
+     *
+     * @return Url
+     *
+     */
     private function newUrl(
         string $domainName,
         string $subDomainName = null,
@@ -236,6 +259,14 @@ class Request implements RequestInterface
         );
     }
 
+
+    /**
+     * Return a SafeTextCollection constructed using the parts of
+     * the specified $path.
+     *
+     * @return SafeTextCollection
+     *
+     */
     private function deriveSafeTextCollectionFromPathString(
         string $path
     ): SafeTextCollection
@@ -252,11 +283,25 @@ class Request implements RequestInterface
         return new SafeTextCollectionInstance(...$safeText);
     }
 
+    /**
+     * Return the default Url instance that will be returned by
+     * the url() method if the actual url cannot be determined.
+     *
+     * @return Url
+     *
+     */
     private function defaultUrl(): Url
     {
         return $this->newUrl(domainName: self::DEFAULT_HOST);
     }
 
+    /**
+     * Determine an appropriate url string for the current Request
+     * based on the values set in the $_SERVER array.
+     *
+     * @return string
+     *
+     */
     private function determineCurrentRequestUrlString(): string
     {
         $scheme = (
