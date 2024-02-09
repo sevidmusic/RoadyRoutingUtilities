@@ -2,17 +2,12 @@
 
 namespace Darling\RoadyRoutingUtilities\interfaces\requests;
 
-use Darling\PHPTextTypes\interfaces\strings\Name;
-use Darling\PHPWebPaths\interfaces\paths\Url;
+use \Darling\PHPTextTypes\interfaces\strings\Name;
+use \Darling\PHPWebPaths\interfaces\paths\Url;
 
 /**
- * Description of this interface.
+ * A Request represents a request to a server.
  *
- * @example
- *
- * ```
- *
- * ```
  */
 interface Request
 {

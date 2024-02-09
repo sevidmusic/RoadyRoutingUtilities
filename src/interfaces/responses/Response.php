@@ -7,19 +7,27 @@ use Darling\RoadyRoutingUtilities\interfaces\requests\Request;
 
 
 /**
- * Description of this interface.
+ * A Response is composed of a Request and collection of Routes
+ * that should be served in response to that Request.
  *
- * @example
- *
- * ```
- *
- * ```
  */
 interface Response
 {
 
+    /**
+     * The Request that this Response responds to.
+     *
+     * @return Request
+     *
+     */
     public function request(): Request;
 
+    /**
+     * The Routes that should be served with this Response.
+     *
+     * @return RouteCollection
+     *
+     */
     public function routeCollection(): RouteCollection;
 
 }

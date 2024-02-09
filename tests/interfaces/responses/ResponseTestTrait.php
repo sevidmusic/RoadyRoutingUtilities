@@ -2,11 +2,10 @@
 
 namespace Darling\RoadyRoutingUtilities\tests\interfaces\responses;
 
-use \Darling\RoadyRoutes\classes\collections\RouteCollection as RouteCollectionInstance;
 use \Darling\RoadyRoutes\interfaces\collections\RouteCollection;
-use \Darling\RoadyRoutingUtilities\classes\requests\Request as RequestInstance;
 use \Darling\RoadyRoutingUtilities\interfaces\requests\Request;
 use \Darling\RoadyRoutingUtilities\interfaces\responses\Response;
+use \PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * The ResponseTestTrait defines common tests for implementations of
@@ -15,6 +14,7 @@ use \Darling\RoadyRoutingUtilities\interfaces\responses\Response;
  * @see Response
  *
  */
+#[CoversClass(Response::class)]
 trait ResponseTestTrait
 {
 
@@ -34,6 +34,14 @@ trait ResponseTestTrait
      * This method must set the Response implementation instance
      * to be tested via the setResponseTestInstance() method.
      *
+     * This method must also set the Request instance that is
+     * expected to be returned by the Response implementation
+     * being tested's request() method.
+     *
+     * This method must also set the RouteCollection instance that is
+     * expected to be returned by the Response implementation
+     * being tested's routeCollection() method.
+     *
      * This method may also be used to perform any additional setup
      * required by the implementation being tested.
      *
@@ -42,7 +50,17 @@ trait ResponseTestTrait
      * @example
      *
      * ```
-     *
+     * public function setUp(): void
+     * {
+     *     $urlString = $this->randomUrlString();
+     *     $request = new RequestInstance($urlString);
+     *     $routeCollection = new RouteCollectionInstance();
+     *     $this->setExpectedRequest($request);
+     *     $this->setExpectedRouteCollection($routeCollection);
+     *     $this->setResponseTestInstance(
+     *         new Response($request, $routeCollection)
+     *     );
+     * }
      * ```
      *
      */
@@ -146,8 +164,6 @@ trait ResponseTestTrait
      *
      * @return void
      *
-     * @covers Request->request()
-     *
      */
     public function test_request_returns_expected_request(): void
     {
@@ -167,8 +183,6 @@ trait ResponseTestTrait
      * RouteCollection.
      *
      * @return void
-     *
-     * @covers Request->routeCollection()
      *
      */
     public function test_routeCollection_returns_expected_routeCollection(): void

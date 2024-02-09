@@ -5,7 +5,9 @@ namespace Darling\RoadyRoutingUtilities\tests\classes\requests;
 use \Darling\RoadyRoutingUtilities\classes\requests\Request;
 use \Darling\RoadyRoutingUtilities\tests\RoadyRoutingUtilitiesTest;
 use \Darling\RoadyRoutingUtilities\tests\interfaces\requests\RequestTestTrait;
+use \PHPUnit\Framework\Attributes\CoversClass;
 
+#[CoversClass(Request::class)]
 class RequestTest extends RoadyRoutingUtilitiesTest
 {
 

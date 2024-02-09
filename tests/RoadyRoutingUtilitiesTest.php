@@ -5,6 +5,7 @@ namespace Darling\RoadyRoutingUtilities\tests;
 use \Darling\PHPUnitTestUtilities\traits\PHPUnitConfigurationTests;
 use \Darling\PHPUnitTestUtilities\traits\PHPUnitRandomValues;
 use \Darling\PHPUnitTestUtilities\traits\PHPUnitTestMessages;
+use \PHPUnit\Framework\Attributes\CoversNothing;
 use \PHPUnit\Framework\TestCase;
 
 /**
@@ -14,12 +15,20 @@ use \PHPUnit\Framework\TestCase;
  * All RoadyRoutingUtilities test classes must extend from this class.
  *
  */
+#[CoversNothing]
 class RoadyRoutingUtilitiesTest extends TestCase
 {
     use PHPUnitConfigurationTests;
     use PHPUnitTestMessages;
     use PHPUnitRandomValues;
 
+
+    /**
+     * Return a random url string or null.
+     *
+     * @return string|null
+     *
+     */
     public function randomUrlString(): string|null
     {
        $urlStrings = [

@@ -7,7 +7,9 @@ use \Darling\RoadyRoutingUtilities\classes\requests\Request as RequestInstance;
 use \Darling\RoadyRoutingUtilities\classes\responses\Response;
 use \Darling\RoadyRoutingUtilities\tests\RoadyRoutingUtilitiesTest;
 use \Darling\RoadyRoutingUtilities\tests\interfaces\responses\ResponseTestTrait;
+use \PHPUnit\Framework\Attributes\CoversClass;
 
+#[CoversClass(Response::class)]
 class ResponseTest extends RoadyRoutingUtilitiesTest
 {
 

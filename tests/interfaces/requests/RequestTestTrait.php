@@ -22,14 +22,13 @@ use \Darling\PHPWebPaths\classes\paths\parts\url\TopLevelDomainName as TopLevelD
 use \Darling\PHPWebPaths\enumerations\paths\parts\url\Scheme;
 use \Darling\PHPWebPaths\interfaces\paths\Url;
 use \Darling\RoadyRoutingUtilities\interfaces\requests\Request;
+use \PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * The RequestTestTrait defines common tests for implementations of
  * the Request interface.
- *
- * @see Request
- *
  */
+#[CoversClass(Request::class)]
 trait RequestTestTrait
 {
 
@@ -76,35 +75,31 @@ trait RequestTestTrait
     private string $queryParameterName = 'query';
 
     /**
-     * @var non-empty-string $fragmentParameterName Name of the url
-     *                                              query parameter
-     *                                              used to determine
-     *                                              the Fragment that
-     *                                              is expected to be
-     *                                              assigned to the
-     *                                              Request's Url.
+     * @var non-empty-string $fragmentParameterName Key of the
+     *                                              `fragment` value
+     *                                              in the array
+     *                                              returned
+     *                                              by parse_url().
      */
     private string $fragmentParameterName = 'fragment';
 
     /**
-     * @var non-empty-string $schemeParameterName Name of the url
-     *                                            query parameter used
-     *                                            to determine the
-     *                                            Scheme that is
-     *                                            expected to be
-     *                                            assigned to the
-     *                                            Request's Url.
+     * @var non-empty-string $schemeParameterName Key of the `scheme`
+     *                                            value in the array
+     *                                            returned
+     *                                            by parse_url().
      */
     private string $schemeParameterName = 'scheme';
 
     /**
-     * @var string|null $testUrlString The url string to use for testing.
+     * @var string|null $testUrlString The url string to use for
+     *                                 testing. Defaults to null.
      */
     private string|null $testUrlString = null;
 
     /**
      * @var non-empty-string $defaultRequestName Default Request Name
-     *                                           used if host cannot
+     *                                           used if name cannot
      *                                           be determined from
      *                                           $testUrlString.
      */
@@ -122,6 +117,9 @@ trait RequestTestTrait
      * This method must set the Request implementation instance
      * to be tested via the setRequestTestInstance() method.
      *
+     * This method must also set the test url string
+     * to use for testing via the setTestUrlString() method.
+     *
      * This method may also be used to perform any additional setup
      * required by the implementation being tested.
      *
@@ -130,6 +128,14 @@ trait RequestTestTrait
      * @example
      *
      * ```
+     * public function setUp(): void
+     * {
+     *     $urlString = $this->randomUrlString();
+     *     $this->setTestUrlString($urlString);
+     *     $this->setRequestTestInstance(
+     *         new Request($urlString)
+     *     );
+     * }
      *
      * ```
      *
@@ -170,6 +176,16 @@ trait RequestTestTrait
      *
      * The value of this Name will be determined based on the
      * current value of this Trait's $testUrlString property.
+     *
+     * If a Name cannot be determined from this Trait's $testUrlString
+     * property's value then this method will attempt to determine the
+     * Name from the value of $_POST[$this->requestParameterName] or
+     * $_GET[$this->requestParameterName].
+     *
+     * Finally, if a Name cannot be determined from the $testUrlString,
+     * $_POST, or $_GET, then a Name whose string value is assigned
+     * the value of this Trait's $defaultRequestName property
+     * will be returned.
      *
      * @return Name
      *
@@ -252,6 +268,16 @@ trait RequestTestTrait
         return $this->testUrlString;
     }
 
+    /**
+     * Determine the Url that is expected to be returned by the
+     * Request implementation being tested's url() method.
+     *
+     * The Url will be determined based on the current value of
+     * this Trait's $testUrlString property.
+     *
+     * @return Url
+     *
+     */
     public function expectedUrl(): Url
     {
         $currentRequestsUrlParts = parse_url(
@@ -328,6 +354,12 @@ trait RequestTestTrait
         return $this->defaultUrl();
     }
 
+    /**
+     * Return a new Url instance based on the specified parameters.
+     *
+     * @return Url
+     *
+     */
     private function newUrl(
         string $domainName,
         string $subDomainName = null,
@@ -399,6 +431,16 @@ trait RequestTestTrait
         );
     }
 
+    /**
+     * Determine the an approprite url string for the current Request
+     * based on the values set in the $_SERVER array.
+     *
+     * This method is called when the current $testUrlString is
+     * set to null.
+     *
+     * @return string
+     *
+     */
     private function determineCurrentRequestUrlString(): string
     {
         $scheme = (
@@ -439,8 +481,6 @@ trait RequestTestTrait
      *
      * @return void
      *
-     * @covers Request->name()
-     *
      */
     public function test_name_returns_expected_name(): void
     {
@@ -459,8 +499,6 @@ trait RequestTestTrait
      * Test that the url() method returns the expected Url.
      *
      * @return void
-     *
-     * @covers Request->url()
      *
      */
     public function test_url_returns_expected_url(): void
