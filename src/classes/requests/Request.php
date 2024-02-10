@@ -26,13 +26,73 @@ use \Darling\RoadyRoutingUtilities\interfaces\requests\Request as RequestInterfa
 class Request implements RequestInterface
 {
 
+    /**
+     * @const non-empty-string $defaultHost Default Host used if host
+     *                                      cannot be determined from
+     *                                      $urlString.
+     */
     private const DEFAULT_HOST = 'localhost';
+
+    /**
+     * @const non-empty-string $requestParameterName Name of the url
+     *                                               query parameter
+     *                                               used to determine
+     *                                               the Name that is
+     *                                               expected to be
+     *                                               assigned to the
+     *                                               Request.
+     */
     private const REQUEST_PARAMETER_NAME = 'request';
+
+    /**
+     * @const non-empty-string $httpsOnValue The value that will be
+     *                                       assigned to
+     *                                       $_SERVER['HTTPS'] if
+     *                                       `https` is enabled.
+     */
     private const HTTPS_ON_VALUE = 'on';
+
+    /**
+     * @const non-empty-string $domainSeparator Character used to
+     *                                          separate the
+     *                                          sub-domain, domain,
+     *                                          and top-level
+     *                                          domain of a url.
+     */
     private const DOMAIN_SEPARATOR = '.';
+
+    /**
+     * @const non-empty-string $queryParameterName Key of the `query`
+     *                                             value in the
+     *                                             array returned by
+     *                                             parse_url().
+     */
     private const QUERY_PARAMETER_NAME = 'query';
+
+    /**
+     * @const non-empty-string $fragmentParameterName Key of the
+     *                                                `fragment` value
+     *                                                in the array
+     *                                                returned
+     *                                                by parse_url().
+     */
     private const FRAGMENT_PARAMETER_NAME = 'fragment';
+
+    /**
+     * @const non-empty-string $schemeParameterName Key of the
+     *                                              `scheme` value
+     *                                              in the array
+     *                                              returned
+     *                                              by parse_url().
+     */
     private const SCHEME_PARAMETER_NAME = 'scheme';
+
+    /**
+     * @var non-empty-string $defaultRequestName Default Request Name
+     *                                           used if name cannot
+     *                                           be determined from
+     *                                           $urlString.
+     */
     private const DEFAULT_REQUEST_NAME = 'homepage';
 
     public function __construct(
