@@ -2,10 +2,10 @@
 
 namespace Darling\RoadyRoutingUtilities\classes\responses;
 
-use \Darling\RoadyRoutes\interfaces\collections\RouteCollection;
 use \Darling\RoadyRoutes\classes\collections\RouteCollection as RouteCollectionInstance;
-use \Darling\RoadyRoutingUtilities\interfaces\responses\Response as ResponseInterface;
+use \Darling\RoadyRoutes\interfaces\collections\RouteCollection;
 use \Darling\RoadyRoutingUtilities\interfaces\requests\Request;
+use \Darling\RoadyRoutingUtilities\interfaces\responses\Response as ResponseInterface;
 
 class Response implements ResponseInterface
 {

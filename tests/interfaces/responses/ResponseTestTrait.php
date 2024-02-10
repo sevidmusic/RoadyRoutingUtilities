@@ -18,8 +18,23 @@ use \PHPUnit\Framework\Attributes\CoversClass;
 trait ResponseTestTrait
 {
 
+    /**
+     * @var RouteCollection $routeCollection The RouteCollection
+     *                                       instance that is
+     *                                       expected to be
+     *                                       returned by the
+     *                                       Response implementation
+     *                                       being tested's
+     *                                       routeCollection()
+     *                                       method.
+     */
     private RouteCollection $routeCollection;
 
+    /**
+     * @var Request $request The Request that is expected to be
+     *                       returned by the Response implementation
+     *                       being tested's routeCollection() method.
+     */
     private Request $request;
 
     /**
@@ -197,6 +212,7 @@ trait ResponseTestTrait
             )
         );
     }
+
     abstract public static function assertEquals(mixed $expected, mixed $actual, string $message = ''): void;
     abstract protected function testFailedMessage(object $testedInstance, string $testedMethod, string $expectation): string;
 
