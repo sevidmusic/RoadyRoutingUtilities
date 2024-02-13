@@ -27,33 +27,44 @@ class Request implements RequestInterface
 {
 
     /**
-     * @const non-empty-string $defaultHost Default Host used if host
+     * @const non-empty-string DEFAULT_HOST Default Host used if host
      *                                      cannot be determined from
-     *                                      $urlString.
+     *                                      $this->urlString.
      */
     private const DEFAULT_HOST = 'localhost';
 
     /**
-     * @const non-empty-string $requestParameterName Name of the url
-     *                                               query parameter
-     *                                               used to determine
-     *                                               the Name that is
-     *                                               expected to be
-     *                                               assigned to the
-     *                                               Request.
+     * @const non-empty-string REQUEST_PARAMETER_NAME The key of the
+     *                                                query parameter
+     *                                                used to determine
+     *                                                the Name that is
+     *                                                expected to be
+     *                                                assigned to the
+     *                                                Request.
+     *
+     *                                                This will either
+     *                                                be the key of
+     *                                                the query
+     *                                                parameter in
+     *                                                the array
+     *                                                returned by
+     *                                                parse_url(),
+     *                                                the $_POST
+     *                                                array, or the
+     *                                                $_GET array.
      */
     private const REQUEST_PARAMETER_NAME = 'request';
 
     /**
-     * @const non-empty-string $httpsOnValue The value that will be
-     *                                       assigned to
-     *                                       $_SERVER['HTTPS'] if
-     *                                       `https` is enabled.
+     * @const non-empty-string HTTPS_ON_VALUE The value that will be
+     *                                        assigned to
+     *                                        $_SERVER['HTTPS'] if
+     *                                        `https` is enabled.
      */
     private const HTTPS_ON_VALUE = 'on';
 
     /**
-     * @const non-empty-string $domainSeparator Character used to
+     * @const non-empty-string DOMAIN_SEPARATOR Character used to
      *                                          separate the
      *                                          sub-domain, domain,
      *                                          and top-level
@@ -62,39 +73,61 @@ class Request implements RequestInterface
     private const DOMAIN_SEPARATOR = '.';
 
     /**
-     * @const non-empty-string $queryParameterName Key of the `query`
-     *                                             value in the
-     *                                             array returned by
-     *                                             parse_url().
+     * @const non-empty-string QUERY_PARAMETER_NAME Key of the `query`
+     *                                              value in the
+     *                                              array returned by
+     *                                              parse_url().
      */
     private const QUERY_PARAMETER_NAME = 'query';
 
     /**
-     * @const non-empty-string $fragmentParameterName Key of the
-     *                                                `fragment` value
-     *                                                in the array
-     *                                                returned
-     *                                                by parse_url().
+     * @const non-empty-string FRAGMENT_PARAMETER_NAME Key of the
+     *                                                 `fragment` value
+     *                                                 in the array
+     *                                                 returned
+     *                                                 by parse_url().
      */
     private const FRAGMENT_PARAMETER_NAME = 'fragment';
 
     /**
-     * @const non-empty-string $schemeParameterName Key of the
-     *                                              `scheme` value
-     *                                              in the array
-     *                                              returned
-     *                                              by parse_url().
+     * @const non-empty-string SCHEME_PARAMETER_NAME Key of the
+     *                                               `scheme` value
+     *                                               in the array
+     *                                               returned
+     *                                               by parse_url().
      */
     private const SCHEME_PARAMETER_NAME = 'scheme';
 
     /**
-     * @var non-empty-string $defaultRequestName Default Request Name
-     *                                           used if name cannot
-     *                                           be determined from
-     *                                           $urlString.
+     * @var non-empty-string DEFAULT_REQUEST_NAME Default Request Name
+     *                                            used if name cannot
+     *                                            be determined from
+     *                                            $this->urlString,
+     *                                            $_SERVER, $_POST,
+     *                                            or $_GET.
      */
     private const DEFAULT_REQUEST_NAME = 'homepage';
 
+    /**
+     * Instantiate a new Request instance.
+     *
+     * If a $urlString is specified, the Request will be constructed
+     * using the specified $urlStirng, and will represent the request
+     * implied by the specified $urlString.
+     *
+     * If a $urlString is not specified, the Request will be constructed
+     * based on the state of the $_SERVER, $_POST, and $_GET arrays.
+     *
+     * In other words, if a $urlString is not specified the Request
+     * will represent the current request to the server.
+     *
+     * @param string|null $urlString A string that defines the url to
+     *                               construct the Request from.
+     *                               If a $urlString is not specified
+     *                               then the Request will represent
+     *                               the current request to the server.
+     *
+     */
     public function __construct(
         private string|null $urlString = null
     ) {}

@@ -13,9 +13,8 @@ class RouterTest extends RoadyRoutingUtilitiesTest
 {
 
     /**
-     * The RouterTestTrait defines
-     * common tests for implementations of the
-     * Darling\RoadyRoutingUtilities\interfaces\routers\Router
+     * The RouterTestTrait defines common tests for implementations
+     * of the Darling\RoadyRoutingUtilities\interfaces\routers\Router
      * interface.
      *
      * @see RouterTestTrait
