@@ -392,6 +392,13 @@ trait RouterTestTrait
         return new ModuleRoutesJsonConfigurationReaderInstance();
     }
 
+    /**
+     * Test that handleRequest() returns the expected Response based
+     * on a given Request.
+     *
+     * @return void
+     *
+     */
     public function test_handleRequest_returns_the_expected_Response(): void
     {
         $this->assertEquals(
