@@ -21,6 +21,7 @@ use \Darling\RoadyModuleUtilities\interfaces\determinators\ModuleJSRouteDetermin
 use \Darling\RoadyModuleUtilities\interfaces\determinators\ModuleOutputRouteDeterminator;
 use \Darling\RoadyModuleUtilities\interfaces\determinators\RoadyModuleFileSystemPathDeterminator;
 use \Darling\RoadyModuleUtilities\interfaces\directory\listings\ListingOfDirectoryOfRoadyModules;
+use \Darling\RoadyModuleUtilities\interfaces\paths\PathToDirectoryOfRoadyModules;
 use \Darling\RoadyModuleUtilities\interfaces\paths\PathToRoadyModuleDirectory;
 use \Darling\RoadyRoutes\classes\collections\RouteCollection as RouteCollectionInstance;
 use \Darling\RoadyRoutes\classes\paths\RelativePath as RelativePathInstance;
@@ -31,8 +32,8 @@ use \Darling\RoadyRoutingUtilities\interfaces\routers\Router;
 use \PHPUnit\Framework\Attributes\CoversClass;
 
 /**
- * The RouterTestTrait defines common tests for
- * implementations of the Router interface.
+ * The RouterTestTrait defines common tests for implementations of
+ * the Router interface.
  *
  * @see Router
  *
@@ -42,13 +43,15 @@ trait RouterTestTrait
 {
 
     /**
-     * @var Router $router
-     *                              An instance of a
-     *                              Router
-     *                              implementation to test.
+     * @var Router $router An instance of a Router implementation
+     *                     to test.
      */
     protected Router $router;
 
+    /**
+     * @var Request $testRequest An instance of a Request
+     *                           to use for testing.
+     */
     private Request $testRequest;
 
     /**
@@ -56,6 +59,9 @@ trait RouterTestTrait
      *
      * This method must set the Router implementation instance
      * to be tested via the setRouterTestInstance() method.
+     *
+     * This method must set the Request instance that will be
+     * used to test the Router via the setTestRequest() method.
      *
      * This method may also be used to perform any additional setup
      * required by the implementation being tested.
@@ -65,10 +71,20 @@ trait RouterTestTrait
      * @example
      *
      * ```
-     * protected function setUp(): void
+     * public function setUp(): void
      * {
+     *     $testRequest = new RequestInstance($this->randomUrlString());
+     *     $listingOfDirectoryOfRoadyModules = $this->listingOfDirectoryOfRoadyTestModules();
+     *     $this->setTestRequest($testRequest);
      *     $this->setRouterTestInstance(
-     *         new \Darling\RoadyRoutingUtilities\classes\routers\Router()
+     *         new Router(
+     *             $this->listingOfDirectoryOfRoadyTestModules(),
+     *             $this->moduleCSSRouteDeterminator(),
+     *             $this->moduleJSRouteDeterminator(),
+     *             $this->moduleOutputRouteDeterminator(),
+     *             $this->roadyModuleFileSystemPathDeterminator(),
+     *             $this->moduleRoutesJsonConfigurationReader(),
+     *         )
      *     );
      * }
      *
@@ -91,11 +107,10 @@ trait RouterTestTrait
     /**
      * Set the Router implementation instance to test.
      *
-     * @param Router $routerTestInstance
-     *                              An instance of an
-     *                              implementation of
-     *                              the Router
-     *                              interface to test.
+     * @param Router $routerTestInstance An instance of an
+     *                                   implementation of
+     *                                   the Router interface
+     *                                   to test.
      *
      * @return void
      *
@@ -107,16 +122,50 @@ trait RouterTestTrait
         $this->router = $routerTestInstance;
     }
 
+    /**
+     * Set the Request instance that will be used to test the
+     * Router implementation being tested.
+     *
+     * @param Request $request The Request that should be used to test
+     *                         the Router implementation instance
+     *                         being tested.
+     *
+     * @return void
+     *
+     */
     protected function setTestRequest(Request $request): void
     {
         $this->testRequest = $request;
     }
 
+    /**
+     * Return the Request instance that will be used to test the
+     * Router implementation being tested.
+     *
+     * @return Request
+     *
+     */
     protected function testRequest(): Request
     {
         return $this->testRequest;
     }
 
+    /**
+     * Determine if a module defins a configuration file for the
+     * specified Request. Return true if it does, false otherwise.
+     *
+     * @param PathToRoadyModuleDirectory $pathToRoadyModuleDirectory
+     *                                   The path to the Roady
+     *                                   module directory where the
+     *                                   configuration file is
+     *                                   expected to be located.
+     *
+     * @param Request $request The Request the configuration file
+     *                         would be defined for if it exists.
+     *
+     * @return bool
+     *
+     */
     private function configurationFileExistsForCurrentRequestsAuthority(
         PathToRoadyModuleDirectory $pathToRoadyModuleDirectory,
         Request $request
@@ -161,11 +210,22 @@ trait RouterTestTrait
                     );
     }
 
+    /**
+     * Deterine the Response that is expected to be returned by the
+     * Router implementation instance being tested's handleRequest()
+     * method if is provided the specified Request.
+     *
+     * @param Request $request A Request that will be used to
+     *                         determine an appropriate Response.
+     *
+     * @return Response
+     *
+     */
     protected function expectedResponse(Request $request): Response
     {
         $respondingRoutes = [];
         foreach (
-        $this->listingOfDirectoryOfRoadyModules()
+        $this->listingOfDirectoryOfRoadyTestModules()
              ->pathToRoadyModuleDirectoryCollection()
              ->collection()
             as
@@ -230,7 +290,14 @@ trait RouterTestTrait
         );
     }
 
-    private function pathToDirectoryOfRoadyTestModules(): PathToDirectoryOfRoadyModulesInstance
+    /**
+     * Return the path to the directory of test modules that will
+     * be used to test the Router.
+     *
+     * @return PathToDirectoryOfRoadyModules
+     *
+     */
+    private function pathToDirectoryOfRoadyTestModules(): PathToDirectoryOfRoadyModules
     {
         $testModuleDirectoryPathString  = str_replace(
             'interfaces' . DIRECTORY_SEPARATOR . 'routers',
@@ -250,37 +317,76 @@ trait RouterTestTrait
         );
     }
 
-    protected function listingOfDirectoryOfRoadyModules(): ListingOfDirectoryOfRoadyModules
+    /**
+     * Return the listing of the directory of test modules that will
+     * be used to test the Router.
+     *
+     * @return ListingOfDirectoryOfRoadyModules
+     *
+     */
+    protected function listingOfDirectoryOfRoadyTestModules(): ListingOfDirectoryOfRoadyModules
     {
         return new ListingOfDirectoryOfRoadyModulesInstance(
             $this->pathToDirectoryOfRoadyTestModules(),
         );
     }
 
+    /**
+     * Return a ModuleCSSRouteDeterminator instance to use for testing.
+     *
+     * @return ModuleCSSRouteDeterminator
+     *
+     */
     protected function moduleCSSRouteDeterminator(): ModuleCSSRouteDeterminator
     {
         return new ModuleCSSRouteDeterminatorInstance();
     }
 
 
+    /**
+     * Return a ModuleJSRouteDeterminator instance to use for testing.
+     *
+     * @return ModuleJSRouteDeterminator
+     *
+     */
     protected function moduleJSRouteDeterminator(): ModuleJSRouteDeterminator
     {
         return new ModuleJSRouteDeterminatorInstance();
     }
 
 
+    /**
+     * Return a ModuleOutputRouteDeterminator instance to use
+     * for testing.
+     *
+     * @return ModuleOutputRouteDeterminator
+     *
+     */
     protected function moduleOutputRouteDeterminator(): ModuleOutputRouteDeterminator
     {
         return new ModuleOutputRouteDeterminatorInstance();
     }
 
 
+    /**
+     * Return a RoadyModuleFileSystemPathDeterminator instance to use
+     * for testing.
+     *
+     * @return RoadyModuleFileSystemPathDeterminator
+     *
+     */
     protected function roadyModuleFileSystemPathDeterminator(): RoadyModuleFileSystemPathDeterminator
     {
         return new RoadyModuleFileSystemPathDeterminatorInstance();
     }
 
 
+    /**
+     * Return a ModuleRoutesJsonConfigurationReader instance to use for testing.
+     *
+     * @return ModuleRoutesJsonConfigurationReader
+     *
+     */
     protected function moduleRoutesJsonConfigurationReader(): ModuleRoutesJsonConfigurationReader
     {
         return new ModuleRoutesJsonConfigurationReaderInstance();
