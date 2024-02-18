@@ -27,6 +27,49 @@ class Request implements RequestInterface
 {
 
     /**
+     * @const non-empty-string SERVER_REQUEST_URI_KEY The key of the
+     *                                                value of the
+     *                                                current request's
+     *                                                uri in the
+     *                                                $_SERVER array.
+     */
+    private const SERVER_REQUEST_URI_KEY = 'REQUEST_URI';
+
+    /**
+     * @const non-empty-string SERVER_HTTP_HOST_KEY The key of the
+     *                                              value of the
+     *                                              current request's
+     *                                              host in the
+     *                                              $_SERVER array.
+     */
+    private const SERVER_HTTP_HOST_KEY = 'HTTP_HOST';
+
+    /**
+     * @const non-empty-string SERVER_HTTPS_KEY The key of the
+     *                                          value of the
+     *                                          current request's
+     *                                          https value in the
+     *                                          $_SERVER array.
+     */
+    private const SERVER_HTTPS_KEY = 'HTTPS';
+
+    /**
+     * @const non-empty-string PATH_PARAMTER_NAME Key of the `path`
+     *                                            value in the
+     *                                            array returned by
+     *                                            parse_url().
+     */
+    private const PATH_PARAMTER_NAME = 'path';
+
+    /**
+     * @const non-empty-string PORT_PARAMTER_NAME Key of the `port`
+     *                                            value in the
+     *                                            array returned by
+     *                                            parse_url().
+     */
+    private const PORT_PARAMTER_NAME = 'port';
+
+    /**
      * @const non-empty-string DEFAULT_HOST Default Host used if host
      *                                      cannot be determined from
      *                                      $this->urlString.
@@ -118,9 +161,6 @@ class Request implements RequestInterface
      * If a $urlString is not specified, the Request will be constructed
      * based on the state of the $_SERVER, $_POST, and $_GET arrays.
      *
-     * In other words, if a $urlString is not specified the Request
-     * will represent the current request to the server.
-     *
      * @param string|null $urlString A string that defines the url to
      *                               construct the Request from.
      *                               If a $urlString is not specified
@@ -196,8 +236,8 @@ class Request implements RequestInterface
                 self::DOMAIN_SEPARATOR,
                 $currentRequestsUrlParts['host'] ?? self::DEFAULT_HOST
             );
-            $port = intval($currentRequestsUrlParts['port'] ?? null);
-            $path = ($currentRequestsUrlParts['path'] ?? null);
+            $port = intval($currentRequestsUrlParts[self::PORT_PARAMTER_NAME] ?? null);
+            $path = ($currentRequestsUrlParts[self::PATH_PARAMTER_NAME] ?? null);
             $query = (
                 $currentRequestsUrlParts[self::QUERY_PARAMETER_NAME]
                 ??
@@ -398,14 +438,14 @@ class Request implements RequestInterface
     private function determineCurrentRequestUrlString(): string
     {
         $scheme = (
-            isset($_SERVER['HTTPS'])
+            isset($_SERVER[self::SERVER_HTTPS_KEY])
             &&
-            $_SERVER['HTTPS'] === self::HTTPS_ON_VALUE
+            $_SERVER[self::SERVER_HTTPS_KEY] === self::HTTPS_ON_VALUE
             ? Scheme::HTTPS
             : Scheme::HTTP
         );
-        $host = ($_SERVER['HTTP_HOST'] ?? self::DEFAULT_HOST);
-        $uri = ($_SERVER['REQUEST_URI'] ?? '');
+        $host = ($_SERVER[self::SERVER_HTTP_HOST_KEY] ?? self::DEFAULT_HOST);
+        $uri = ($_SERVER[self::SERVER_REQUEST_URI_KEY] ?? '');
         return $scheme->value . '://' . $host . $uri;
     }
 
