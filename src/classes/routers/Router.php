@@ -172,11 +172,9 @@ class Router implements RouterInterface
         Request $request
     ): bool
     {
-        return str_replace(
-            ':',
-            '.',
-            $request->url()->domain()->authority()->__toString()
-        ) . '.json'
+        return $this->deriveRouteConfigurationFileNameFromRequest(
+            $request
+        )
         ===
         $this->determinePathToConfigurationFile(
             $pathToRoadyModuleDirectory,
@@ -215,19 +213,38 @@ class Router implements RouterInterface
                             new SafeTextCollectionInstance(
                                 new SafeTextInstance(
                                     new TextInstance(
-                                        str_replace(
-                                            ':',
-                                            '.',
-                                            $request->url()
-                                                    ->domain()
-                                                    ->authority()
-                                                    ->__toString()
-                                        ) . '.json'
+                                        $this->deriveRouteConfigurationFileNameFromRequest(
+                                            $request
+                                        )
                                     )
                                 )
                             )
                         ),
                     );
+    }
+
+    /**
+     * Derive an appropriate Route configuration file name from the
+     * specified Request.
+     *
+     * @param Request $request The Request to derive the Route
+     *                         configuration file name from.
+     *
+     *
+     * @return string
+     *
+     */
+    private function deriveRouteConfigurationFileNameFromRequest(Request $request): string
+    {
+        return str_replace(
+            ':',
+            '.',
+            $request->url()
+                    ->domain()
+                    ->authority()
+                    ->__toString()
+            ) . '.json';
+
     }
 
 }

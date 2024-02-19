@@ -11,21 +11,24 @@ class Response implements ResponseInterface
 
     /**
      * Instantiate a new Response instance using the specified
-     * $request and $routeCollection.
+     * Request and RouteCollection.
      *
-     * The $routeCollection should contain the Routes that are meant
-     * to be served in response to the specified $request.
+     * The RouteCollection should contain the Routes that are meant
+     * to be served in Response to the specified Request.
      *
      * @param Request $request The Request instance that represents
      *                         the request that should trigger the
      *                         server to reply with this response.
      *
      * @param RouteCollection $routeCollection The Routes that should
-     *                                         be included in this
+     *                                         be served with this
      *                                         response.
      *
      */
-    public function __construct(private Request $request, private RouteCollection $routeCollection) { }
+    public function __construct(
+        private Request $request,
+        private RouteCollection $routeCollection
+    ) { }
 
     public function request(): Request
     {
