@@ -12,7 +12,6 @@ use \Darling\PHPWebPaths\interfaces\paths\Url;
 interface Request
 {
 
-
     /**
      * Return Request's Name.
      *
@@ -24,6 +23,9 @@ interface Request
 
     /**
      * Return the Request's Url.
+     *
+     * @return Url
+     *
      */
     public function url(): Url;
 

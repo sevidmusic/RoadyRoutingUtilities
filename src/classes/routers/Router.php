@@ -2,19 +2,11 @@
 
 namespace Darling\RoadyRoutingUtilities\classes\routers;
 
-use \Darling\PHPFileSystemPaths\classes\paths\PathToExistingDirectory as PathToExistingDirectoryInstance;
 use \Darling\PHPFileSystemPaths\interfaces\paths\PathToExistingFile;
 use \Darling\PHPTextTypes\classes\collections\SafeTextCollection as SafeTextCollectionInstance;
 use \Darling\PHPTextTypes\classes\strings\Name as NameInstance;
 use \Darling\PHPTextTypes\classes\strings\SafeText as SafeTextInstance;
 use \Darling\PHPTextTypes\classes\strings\Text as TextInstance;
-use \Darling\RoadyModuleUtilities\classes\configuration\ModuleRoutesJsonConfigurationReader as ModuleRoutesJsonConfigurationReaderInstance;
-use \Darling\RoadyModuleUtilities\classes\determinators\ModuleCSSRouteDeterminator as ModuleCSSRouteDeterminatorInstance;
-use \Darling\RoadyModuleUtilities\classes\determinators\ModuleJSRouteDeterminator as ModuleJSRouteDeterminatorInstance;
-use \Darling\RoadyModuleUtilities\classes\determinators\ModuleOutputRouteDeterminator as ModuleOutputRouteDeterminatorInstance;
-use \Darling\RoadyModuleUtilities\classes\determinators\RoadyModuleFileSystemPathDeterminator as RoadyModuleFileSystemPathDeterminatorInstance;
-use \Darling\RoadyModuleUtilities\classes\directory\listings\ListingOfDirectoryOfRoadyModules as ListingOfDirectoryOfRoadyModulesInstance;
-use \Darling\RoadyModuleUtilities\classes\paths\PathToDirectoryOfRoadyModules as PathToDirectoryOfRoadyModulesInstance;
 use \Darling\RoadyModuleUtilities\interfaces\configuration\ModuleRoutesJsonConfigurationReader;
 use \Darling\RoadyModuleUtilities\interfaces\determinators\ModuleCSSRouteDeterminator;
 use \Darling\RoadyModuleUtilities\interfaces\determinators\ModuleJSRouteDeterminator;
@@ -28,11 +20,66 @@ use \Darling\RoadyRoutingUtilities\classes\responses\Response as ResponseInstanc
 use \Darling\RoadyRoutingUtilities\interfaces\requests\Request;
 use \Darling\RoadyRoutingUtilities\interfaces\responses\Response;
 use \Darling\RoadyRoutingUtilities\interfaces\routers\Router as RouterInterface;
-use \PHPUnit\Framework\Attributes\CoversClass;
 
 class Router implements RouterInterface
 {
 
+    /**
+     * Instantiate a new Router instance.
+     *
+     * @param ListingOfDirectoryOfRoadyModules $listingOfDirectoryOfRoadyModules
+     *                             A ListingOfDirectoryOfRoadyModules
+     *                             instance for the directory that
+     *                             contains the modules whose Routes
+     *                             the Router will process.
+     *
+     * @param ModuleCSSRouteDeterminator $moduleCSSRouteDeterminator
+     *                                   A ModuleCSSRouteDeterminator
+     *                                   instance that will be used
+     *                                   to determine the Routes to
+     *                                   css files that are not
+     *                                   defined by a module in a
+     *                                   configuration file.
+     *
+     * @param ModuleJSRouteDeterminator $moduleJSRouteDeterminator
+     *                                  A ModuleJSRouteDeterminator
+     *                                  instance that will be used
+     *                                  to determine the Routes to
+     *                                  javascript files that are not
+     *                                  defined by a module in a
+     *                                  configuration file.
+     *
+     * @param ModuleOutputRouteDeterminator $moduleOutputRouteDeterminator
+     *                                  A ModuleOutputRouteDeterminator
+     *                                  instance that will be used
+     *                                  to determine the Routes to
+     *                                  php and html files that are
+     *                                  not defined by a module in a
+     *                                  configuration file.
+     *
+     * @param RoadyModuleFileSystemPathDeterminator $roadyModuleFileSystemPathDeterminator
+     *                        A RoadyModuleFileSystemPathDeterminator
+     *                        instance that will be used
+     *                        to determine the paths
+     *                        to the files and
+     *                        directories defined by
+     *                        a module.
+     *
+     * @param ModuleRoutesJsonConfigurationReader $moduleRoutesJsonConfigurationReader
+     *             A ModuleRoutesJsonConfigurationReader
+     *             instance that will be used read
+     *             configuration files provided by
+     *             modules that define Routes for specific
+     *             Domain Authorities. These files will
+     *             be named according to the following
+     *             convention:
+     *
+     *             sub-domain.domain.top-level-domain.PORTNUMBER.json
+     *                                                     |
+     *                                            Actual port number
+     *                                              must be an int.
+     *
+     */
     public function __construct(
         private ListingOfDirectoryOfRoadyModules $listingOfDirectoryOfRoadyModules,
         private ModuleCSSRouteDeterminator $moduleCSSRouteDeterminator,
@@ -111,16 +158,23 @@ class Router implements RouterInterface
         );
     }
 
+    /**
+     * Determine if a module defines a configuration file for the
+     * specified $request.
+     *
+     * Return true if it does, false otherwise.
+     *
+     * @return bool
+     *
+     */
     private function configurationFileExistsForCurrentRequestsAuthority(
         PathToRoadyModuleDirectory $pathToRoadyModuleDirectory,
         Request $request
     ): bool
     {
-        return str_replace(
-            ':',
-            '.',
-            $request->url()->domain()->authority()->__toString()
-        ) . '.json'
+        return $this->deriveRouteConfigurationFileNameFromRequest(
+            $request
+        )
         ===
         $this->determinePathToConfigurationFile(
             $pathToRoadyModuleDirectory,
@@ -128,6 +182,25 @@ class Router implements RouterInterface
         )->name()->__toString();
     }
 
+    /**
+     * Determine the path to the configuration file defined by the
+     * specified module for the Authority implied by the specified
+     * Request.
+     *
+     * @param PathToRoadyModuleDirectory $pathToRoadyModuleDirectory
+     *                                   Path to the directory
+     *                                   of modules.
+     *
+     * @param Request $request The Request whose Authority
+     *                         will correspond to the name
+     *                         of the configuration file that
+     *                         defines a module's manually
+     *                         configured Routes.
+     *
+     *
+     * @return PathToExistingFile
+     *
+     */
     private function determinePathToConfigurationFile(
         PathToRoadyModuleDirectory $pathToRoadyModuleDirectory,
         Request $request
@@ -140,19 +213,38 @@ class Router implements RouterInterface
                             new SafeTextCollectionInstance(
                                 new SafeTextInstance(
                                     new TextInstance(
-                                        str_replace(
-                                            ':',
-                                            '.',
-                                            $request->url()
-                                                    ->domain()
-                                                    ->authority()
-                                                    ->__toString()
-                                        ) . '.json'
+                                        $this->deriveRouteConfigurationFileNameFromRequest(
+                                            $request
+                                        )
                                     )
                                 )
                             )
                         ),
                     );
+    }
+
+    /**
+     * Derive an appropriate Route configuration file name from the
+     * specified Request.
+     *
+     * @param Request $request The Request to derive the Route
+     *                         configuration file name from.
+     *
+     *
+     * @return string
+     *
+     */
+    private function deriveRouteConfigurationFileNameFromRequest(Request $request): string
+    {
+        return str_replace(
+            ':',
+            '.',
+            $request->url()
+                    ->domain()
+                    ->authority()
+                    ->__toString()
+            ) . '.json';
+
     }
 
 }

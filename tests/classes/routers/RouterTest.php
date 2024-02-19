@@ -13,9 +13,8 @@ class RouterTest extends RoadyRoutingUtilitiesTest
 {
 
     /**
-     * The RouterTestTrait defines
-     * common tests for implementations of the
-     * Darling\RoadyRoutingUtilities\interfaces\routers\Router
+     * The RouterTestTrait defines common tests for implementations
+     * of the Darling\RoadyRoutingUtilities\interfaces\routers\Router
      * interface.
      *
      * @see RouterTestTrait
@@ -26,11 +25,11 @@ class RouterTest extends RoadyRoutingUtilitiesTest
     public function setUp(): void
     {
         $testRequest = new RequestInstance($this->randomUrlString());
-        $listingOfDirectoryOfRoadyModules = $this->listingOfDirectoryOfRoadyModules();
+        $listingOfDirectoryOfRoadyModules = $this->listingOfDirectoryOfRoadyTestModules();
         $this->setTestRequest($testRequest);
         $this->setRouterTestInstance(
             new Router(
-                $this->listingOfDirectoryOfRoadyModules(),
+                $this->listingOfDirectoryOfRoadyTestModules(),
                 $this->moduleCSSRouteDeterminator(),
                 $this->moduleJSRouteDeterminator(),
                 $this->moduleOutputRouteDeterminator(),

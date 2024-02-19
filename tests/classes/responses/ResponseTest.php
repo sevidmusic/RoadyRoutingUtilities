@@ -14,9 +14,8 @@ class ResponseTest extends RoadyRoutingUtilitiesTest
 {
 
     /**
-     * The ResponseTestTrait defines
-     * common tests for implementations of the
-     * Darling\RoadyRoutingUtilities\interfaces\responses\Response
+     * The ResponseTestTrait defines common tests for implementations
+     * of the Darling\RoadyRoutingUtilities\interfaces\responses\Response
      * interface.
      *
      * @see ResponseTestTrait

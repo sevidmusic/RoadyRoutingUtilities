@@ -471,6 +471,14 @@ trait RequestTestTrait
         return new SafeTextCollectionInstance(...$safeText);
     }
 
+    /**
+     * Return the default Url instance that will be returned by
+     * the expectedUrl() method if the actual url cannot be
+     * determined.
+     *
+     * @return Url
+     *
+     */
     private function defaultUrl(): Url
     {
         return $this->newUrl(domainName: $this->defaultHost);
