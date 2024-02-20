@@ -1,10 +1,11 @@
 # RoadyRoutingUtilities
 
 The RoadyRoutingUtilities library provides the classes responsible
-for handling routing for the [Roady](https://github.com/sevidmusic/roady) php framework.
+for handling routing for the [Roady](https://github.com/sevidmusic/roady)
+`php` framework.
 
-Though it is designed for use with the Roady php framework, this library
-can be used on it's own.
+Though it is designed for use with the [Roady](https://github.com/sevidmusic/roady)
+`php` framework, this library can be used on it's own.
 
 
 # Installation
