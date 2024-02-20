@@ -61,3 +61,35 @@ var_dump(
 );
 ```
 
+Output:
+
+```php
+array(6) {
+  [0]=>
+  string(16) "Current Request:"
+  ["__toString"]=>
+  string(19) "http://localhost:80"
+  ["domain"]=>
+  string(19) "http://localhost:80"
+  ["path"]=>
+  NULL
+  ["query"]=>
+  NULL
+  ["fragment"]=>
+  NULL
+}
+array(6) {
+  [0]=>
+  string(17) "Specific Request:"
+  ["__toString"]=>
+  string(47) "http://www.example.com:8080/path?query#fragment"
+  ["domain"]=>
+  string(27) "http://www.example.com:8080"
+  ["path"]=>
+  string(5) "/path"
+  ["query"]=>
+  string(5) "query"
+  ["fragment"]=>
+  string(8) "fragment"
+}
+```
