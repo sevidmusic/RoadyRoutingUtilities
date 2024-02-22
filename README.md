@@ -141,3 +141,16 @@ var_dump(
     ],
 );
 ```
+
+### `Darling\RoadyRoutingUtilities\classes\routers\Router`
+
+A Router can accept a Request and return an appropriate Response for
+that Request.
+
+For example:
+
+```php
+
+
+```
+
