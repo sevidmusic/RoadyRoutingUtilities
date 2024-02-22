@@ -291,33 +291,6 @@ trait RouterTestTrait
     }
 
     /**
-     * Return the path to the directory of test modules that will
-     * be used to test the Router.
-     *
-     * @return PathToDirectoryOfRoadyModules
-     *
-     */
-    private function pathToDirectoryOfRoadyTestModules(): PathToDirectoryOfRoadyModules
-    {
-        $testModuleDirectoryPathString  = str_replace(
-            'interfaces' . DIRECTORY_SEPARATOR . 'routers',
-            'modules',
-            __DIR__,
-        );
-        $testModuleDirectoryPathStringParts = explode(DIRECTORY_SEPARATOR, $testModuleDirectoryPathString);
-        $arrayOfSafeText = [];
-        foreach($testModuleDirectoryPathStringParts as $part) {
-            if(!empty($part)) {
-                $arrayOfSafeText[] = new SafeTextInstance(new TextInstance($part));
-            }
-        }
-        return new PathToDirectoryOfRoadyModulesInstance(
-            new PathToExistingDirectoryInstance(
-                new SafeTextCollectionInstance(...$arrayOfSafeText))
-        );
-    }
-
-    /**
      * Return the listing of the directory of test modules that will
      * be used to test the Router.
      *
@@ -414,5 +387,7 @@ trait RouterTestTrait
 
     abstract public static function assertEquals(mixed $expected, mixed $actual, string $message = ''): void;
     abstract protected function testFailedMessage(object $testedInstance, string $testedMethod, string $expectation): string;
+    abstract protected function pathToDirectoryOfRoadyTestModules(): PathToDirectoryOfRoadyModules;
+
 
 }
