@@ -170,9 +170,7 @@ that Request.
 For example:
 
 ```php
-$roadyRoutingUtilitiesTestingAPI = new \Darling\RoadyRoutingUtilities\tests\RoadyRoutingUtilitiesTest(
-    'RouterExample'
-);
+$roadyRoutingUtilitiesTestingAPI = new \Darling\RoadyRoutingUtilities\tests\RoadyRoutingUtilitiesTest('RouterIntegrationTest');
 
 $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
     $roadyRoutingUtilitiesTestingAPI->randomUrlString()
@@ -189,11 +187,13 @@ $router = new \Darling\RoadyRoutingUtilities\classes\routers\Router(
     new \Darling\RoadyModuleUtilities\classes\configuration\ModuleRoutesJsonConfigurationReader(),
 );
 
+$response = $router->handleRequest($specificRequest);
+
 var_dump(
     [
-        'Request: ' => $router->handleRequest($specificRequest)->request()->url()->__toString(),
+        'Request: ' => $response->request()->url()->__toString(),
         'Number of Routes included in Response: ' => count(
-            $router->handleRequest($specificRequest)->routeCollection()->collection()
+            $response->routeCollection()->collection()
         ),
     ]
 );
@@ -205,7 +205,7 @@ Output:
 ```php
 array(2) {
   ["Request: "]=>
-  string(42) "http://foo.bar.baz:2343/some/path/bin.html"
+  string(75) "http://foo.bar.baz:2343/some/path/bin.html?request=specific-request&q=a&b=c"
   ["Number of Routes included in Response: "]=>
   int(155)
 }

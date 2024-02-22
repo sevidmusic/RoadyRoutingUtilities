@@ -25,11 +25,13 @@ $router = new \Darling\RoadyRoutingUtilities\classes\routers\Router(
     new \Darling\RoadyModuleUtilities\classes\configuration\ModuleRoutesJsonConfigurationReader(),
 );
 
+$response = $router->handleRequest($specificRequest);
+
 var_dump(
     [
-        'Request: ' => $router->handleRequest($specificRequest)->request()->url()->__toString(),
+        'Request: ' => $response->request()->url()->__toString(),
         'Number of Routes included in Response: ' => count(
-            $router->handleRequest($specificRequest)->routeCollection()->collection()
+            $response->routeCollection()->collection()
         ),
     ]
 );
