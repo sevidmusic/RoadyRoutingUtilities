@@ -142,6 +142,26 @@ var_dump(
 );
 ```
 
+Output:
+
+```php
+array(3) {
+  ["Request"]=>
+  string(47) "http://www.example.com:8080/path?query#fragment"
+  ["Number of Routes"]=>
+  int(1)
+  ["First Route"]=>
+  array(3) {
+    ["module name"]=>
+    string(11) "hello-world"
+    ["relative path"]=>
+    string(20) "output/homepage.html"
+    ["responds to requests: "]=>
+    string(15) "[homepage, ...]"
+  }
+}
+```
+
 ### `Darling\RoadyRoutingUtilities\classes\routers\Router`
 
 A Router can accept a Request and return an appropriate Response for
@@ -150,7 +170,44 @@ that Request.
 For example:
 
 ```php
+$roadyRoutingUtilitiesTestingAPI = new \Darling\RoadyRoutingUtilities\tests\RoadyRoutingUtilitiesTest(
+    'RouterExample'
+);
 
+$specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
+    $roadyRoutingUtilitiesTestingAPI->randomUrlString()
+);
 
+$router = new \Darling\RoadyRoutingUtilities\classes\routers\Router(
+    new \Darling\RoadyModuleUtilities\classes\directory\listings\ListingOfDirectoryOfRoadyModules(
+        $roadyRoutingUtilitiesTestingAPI->pathToDirectoryOfRoadyTestModules(),
+    ),
+    new \Darling\RoadyModuleUtilities\classes\determinators\ModuleCSSRouteDeterminator(),
+    new \Darling\RoadyModuleUtilities\classes\determinators\ModuleJSRouteDeterminator(),
+    new \Darling\RoadyModuleUtilities\classes\determinators\ModuleOutputRouteDeterminator(),
+    new \Darling\RoadyModuleUtilities\classes\determinators\RoadyModuleFileSystemPathDeterminator(),
+    new \Darling\RoadyModuleUtilities\classes\configuration\ModuleRoutesJsonConfigurationReader(),
+);
+
+var_dump(
+    [
+        'Request: ' => $router->handleRequest($specificRequest)->request()->url()->__toString(),
+        'Number of Routes included in Response: ' => count(
+            $router->handleRequest($specificRequest)->routeCollection()->collection()
+        ),
+    ]
+);
+
+```
+
+Output:
+
+```php
+array(2) {
+  ["Request: "]=>
+  string(42) "http://foo.bar.baz:2343/some/path/bin.html"
+  ["Number of Routes included in Response: "]=>
+  int(155)
+}
 ```
 

@@ -14,7 +14,7 @@ $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
     $roadyRoutingUtilitiesTestingAPI->randomUrlString()
 );
 
-$router = new Darling\RoadyRoutingUtilities\classes\routers\Router(
+$router = new \Darling\RoadyRoutingUtilities\classes\routers\Router(
     new \Darling\RoadyModuleUtilities\classes\directory\listings\ListingOfDirectoryOfRoadyModules(
         $roadyRoutingUtilitiesTestingAPI->pathToDirectoryOfRoadyTestModules(),
     ),
