@@ -43,20 +43,14 @@ $routeCollection = new \Darling\RoadyRoutes\classes\collections\RouteCollection(
     ),
 );
 
-if($routeCollection instanceof \Darling\RoadyRoutes\classes\collections\RouteCollection)
-{
-    $response = new Darling\RoadyRoutingUtilities\classes\responses\Response($specificRequest, $routeCollection);
-
-    var_dump(
-        [
-            'Request' => $response->request()->url()->__toString(),
-            'Number of Routes' => count($response->routeCollection()->collection()),
-            'First Route' => [
-                'module name' => $response->routeCollection()->collection()[0]->moduleName()->__toString(),
-                'relative path' => $response->routeCollection()->collection()[0]->relativePath()->__toString(),
-                'responds to requests: ' => '[' . $response->routeCollection()->collection()[0]->nameCollection()->collection()[0] . ', ...]',
-            ],
-        ],
+if(
+    $routeCollection instanceof \Darling\RoadyRoutes\classes\collections\RouteCollection
+) {
+    $response = new Darling\RoadyRoutingUtilities\classes\responses\Response(
+        $specificRequest, $routeCollection
     );
+
+    var_dump($response);
+
 }
 

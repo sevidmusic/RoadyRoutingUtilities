@@ -27,12 +27,5 @@ $router = new \Darling\RoadyRoutingUtilities\classes\routers\Router(
 
 $response = $router->handleRequest($specificRequest);
 
-var_dump(
-    [
-        'Request: ' => $response->request()->url()->__toString(),
-        'Number of Routes included in Response: ' => count(
-            $response->routeCollection()->collection()
-        ),
-    ]
-);
+var_dump($response);
 
