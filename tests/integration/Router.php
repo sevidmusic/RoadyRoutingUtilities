@@ -14,7 +14,7 @@ $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
     $roadyRoutingUtilitiesTestingAPI->randomUrlString()
 );
 
-$router = new Darling\RoadyRoutingUtilities\classes\routers\Router(
+$router = new \Darling\RoadyRoutingUtilities\classes\routers\Router(
     new \Darling\RoadyModuleUtilities\classes\directory\listings\ListingOfDirectoryOfRoadyModules(
         $roadyRoutingUtilitiesTestingAPI->pathToDirectoryOfRoadyTestModules(),
     ),
@@ -25,12 +25,7 @@ $router = new Darling\RoadyRoutingUtilities\classes\routers\Router(
     new \Darling\RoadyModuleUtilities\classes\configuration\ModuleRoutesJsonConfigurationReader(),
 );
 
-var_dump(
-    [
-        'Request: ' => $router->handleRequest($specificRequest)->request()->url()->__toString(),
-        'Number of Routes included in Response: ' => count(
-            $router->handleRequest($specificRequest)->routeCollection()->collection()
-        ),
-    ]
-);
+$response = $router->handleRequest($specificRequest);
+
+var_dump($response);
 
