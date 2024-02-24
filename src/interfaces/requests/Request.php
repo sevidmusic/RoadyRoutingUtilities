@@ -7,7 +7,6 @@ use \Darling\PHPWebPaths\interfaces\paths\Url;
 
 /**
  * A Request represents a request to a server.
- *
  */
 interface Request
 {

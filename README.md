@@ -54,18 +54,18 @@ $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
 $routeCollection = new \Darling\RoadyRoutes\classes\collections\RouteCollection(
     new \Darling\RoadyRoutes\classes\routes\Route(
         new \Darling\PHPTextTypes\classes\strings\Name(
-            new \Darling\PHPTextTypes\classes\strings\Text('route-name'),
+            new \Darling\PHPTextTypes\classes\strings\Text('module-name'),
         ),
         new \Darling\PHPTextTypes\classes\collections\NameCollection(
             new \Darling\PHPTextTypes\classes\strings\Name(
-                new \Darling\PHPTextTypes\classes\strings\Text('route-name'),
+                new \Darling\PHPTextTypes\classes\strings\Text('homepage'),
             ),
         ),
         new \Darling\RoadyRoutes\classes\collections\NamedPositionCollection(
             new \Darling\RoadyRoutes\classes\identifiers\NamedPosition(
                 new \Darling\RoadyRoutes\classes\identifiers\PositionName(
                     new \Darling\PHPTextTypes\classes\strings\Name(
-                        new \Darling\PHPTextTypes\classes\strings\Text('route-name'),
+                        new \Darling\PHPTextTypes\classes\strings\Text('roady-ui-main-content'),
                     )
                 ),
                 new \Darling\RoadyRoutes\classes\settings\Position(0),
