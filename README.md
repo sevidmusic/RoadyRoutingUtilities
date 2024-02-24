@@ -20,16 +20,31 @@ composer require darling/roady-routing-utilities
 
 A Request represents a request to a server.
 
-For example, to define a Request that represents the current request
-to a server instantiate a new Request without any arguments:
+A Request has a Name, and a Url.
+
+A Request's Name will either be based on value of the `request`
+query parameter that is assigned to the Request's Url, the value
+of `$_POST['request']`, or the value of `$_GET['request']`.
+
+If the Url is not assigned a query parameter named `request`, and
+nither `$_POST['request']` or `$_GET['request']` is set, then
+the Request's Name will be `homepage`.
+
+Note: The Url's request query parameter will always be preferred if
+it is set, then $_POST['request'], then $_GET['request'].
+
+Examples:
+
+To define a Request that represents the current request to a server
+instantiate a new Request without any arguments:
 
 ```php
 $currentRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request();
 ```
 
-Alternatively, a Request may be instantiated with an optional url
-`string` such as `http://example.com:8080?query#fragment` if a
-specific request to a server is to be represented.
+To define a Request that represents a specific request to a server an
+opitional url `string` such as `http://example.com:8080?query#fragment`
+may be passed to the new Request's `__construct` method.
 
 For example:
 
@@ -44,7 +59,9 @@ $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
 A Response represents the relationship between a Request and collection
 of Routes that should be served in response to that Request.
 
-For example, to define a Response for a specific Request to a server:
+Examples:
+
+To define a Response for a specific Request to a server:
 
 ```php
 $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
@@ -53,31 +70,39 @@ $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
 
 $routeCollection = new \Darling\RoadyRoutes\classes\collections\RouteCollection(
     new \Darling\RoadyRoutes\classes\routes\Route(
-        new \Darling\PHPTextTypes\classes\strings\Name(
-            new \Darling\PHPTextTypes\classes\strings\Text('route-name'),
+        moduleName: new \Darling\PHPTextTypes\classes\strings\Name(
+            new \Darling\PHPTextTypes\classes\strings\Text('hello-world'),
         ),
-        new \Darling\PHPTextTypes\classes\collections\NameCollection(
+        // Names of the Requests this Route should be served in response to.
+        nameCollection: new \Darling\PHPTextTypes\classes\collections\NameCollection(
             new \Darling\PHPTextTypes\classes\strings\Name(
-                new \Darling\PHPTextTypes\classes\strings\Text('route-name'),
+                new \Darling\PHPTextTypes\classes\strings\Text('homepage'),
             ),
         ),
-        new \Darling\RoadyRoutes\classes\collections\NamedPositionCollection(
+        // Named positions where this Routes output should be rendered by Roady's UI.
+        namedPositionCollection: new \Darling\RoadyRoutes\classes\collections\NamedPositionCollection(
             new \Darling\RoadyRoutes\classes\identifiers\NamedPosition(
                 new \Darling\RoadyRoutes\classes\identifiers\PositionName(
                     new \Darling\PHPTextTypes\classes\strings\Name(
-                        new \Darling\PHPTextTypes\classes\strings\Text('route-name'),
+                        new \Darling\PHPTextTypes\classes\strings\Text('TargetPositionName'),
                     )
                 ),
                 new \Darling\RoadyRoutes\classes\settings\Position(0),
             ),
         ),
-        new \Darling\RoadyRoutes\classes\paths\RelativePath(
-            new \Darling\PHPTextTypes\classes\collections\SafeTextCollection()
+        // RelativePath to this Routes output file.
+        relativePath: new \Darling\RoadyRoutes\classes\paths\RelativePath(
+            new \Darling\PHPTextTypes\classes\collections\SafeTextCollection(
+                new SafeText(new \Darling\PHPTextTypes\classes\strings\Text('output')),
+                new SafeText(new \Darling\PHPTextTypes\classes\strings\Text('homepage.html')),
+            )
         ),
     ),
 );
 
-$response = new Response($specificRequest, $routeCollection);
+$response = new Darling\RoadyRoutingUtilities\classes\responses\Response(
+    $specificRequest, $routeCollection
+);
 ```
 
 ### `Darling\RoadyRoutingUtilities\classes\routers\Router`
@@ -85,7 +110,7 @@ $response = new Response($specificRequest, $routeCollection);
 A Router can accept a Request and return an appropriate Response for
 that Request.
 
-For example:
+Examples:
 
 ```php
 $specificRequest = new \Darling\RoadyRoutingUtilities\classes\requests\Request(
@@ -134,26 +159,26 @@ As a final example, the following is a snippet from [Roady's](https://github.com
 Router are used in practice:
 
 ```php
-$currentRequest = new RequestInstance();
+$currentRequest = new Request();
 $roadyModuleFileSystemPathDeterminator =
-    new RoadyModuleFileSystemPathDeterminatorInstance();
+    new RoadyModuleFileSystemPathDeterminator();
 
-$router = new RouterInstance(
-    new ListingOfDirectoryOfRoadyModulesInstance(
+$router = new Router(
+    new ListingOfDirectoryOfRoadyModules(
         RoadyAPI::pathToDirectoryOfRoadyModules()
     ),
-    new ModuleCSSRouteDeterminatorInstance(),
-    new ModuleJSRouteDeterminatorInstance(),
-    new ModuleOutputRouteDeterminatorInstance(),
+    new ModuleCSSRouteDeterminator(),
+    new ModuleJSRouteDeterminator(),
+    new ModuleOutputRouteDeterminator(),
     $roadyModuleFileSystemPathDeterminator,
-    new ModuleRoutesJsonConfigurationReaderInstance(),
+    new ModuleRoutesJsonConfigurationReader(),
 );
 
 $response = $router->handleRequest($currentRequest);
 
 $roadyUI = new RoadyUI(
     RoadyAPI::pathToDirectoryOfRoadyModules(),
-    new RouteCollectionSorterInstance(),
+    new RouteCollectionSorter(),
     $roadyModuleFileSystemPathDeterminator,
 );
 

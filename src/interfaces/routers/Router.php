@@ -6,9 +6,8 @@ use \Darling\RoadyRoutingUtilities\interfaces\requests\Request;
 use \Darling\RoadyRoutingUtilities\interfaces\responses\Response;
 
 /**
- * A Router can accept a Request and return an appropriate
- * Response for that Request.
- *
+ * A Router can accept a Request and return an appropriate Response
+ * for that Request.
  */
 interface Router
 {
