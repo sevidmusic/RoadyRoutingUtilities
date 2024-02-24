@@ -22,7 +22,7 @@ A Request represents a request to a server.
 
 A Request has a Name, and a Url.
 
-A Request's Name will either be based on value of the `request`
+A Request's Name will either be based on the value of the `request`
 query parameter that is assigned to the Request's Url, the value
 of `$_POST['request']`, or the value of `$_GET['request']`.
 
