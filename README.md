@@ -31,7 +31,7 @@ nither `$_POST['request']` or `$_GET['request']` is set, then
 the Request's Name will be `homepage`.
 
 Note: The Url's request query parameter will always be preferred if
-it is set, then $_POST['request'], then $_GET['request'].
+it is set, then `$_POST['request']`, then `$_GET['request']`.
 
 Examples:
 
