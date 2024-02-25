@@ -42,5 +42,29 @@ interface Request
      */
     public function url(): Url;
 
+    /**
+     * Return the $_SERVER array.
+     *
+     * @return array<mixed>
+     *
+     */
+    public function serverArray(): array;
+
+    /**
+     * Return the $_POST array.
+     *
+     * @return array<mixed>
+     *
+     */
+    public function postArray(): array;
+
+    /**
+     * Return the $_GET array.
+     *
+     * @return array<mixed>
+     *
+     */
+    public function getArray(): array;
+
 }
 
