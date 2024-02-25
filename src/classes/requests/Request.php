@@ -452,5 +452,20 @@ class Request implements RequestInterface
         return $scheme->value . '://' . $host . $uri;
     }
 
+    public function serverArray(): array
+    {
+        return $_SERVER;
+    }
+
+    public function postArray(): array
+    {
+        return $_POST;
+    }
+
+    public function getArray(): array
+    {
+        return $_GET;
+    }
+
 }
 

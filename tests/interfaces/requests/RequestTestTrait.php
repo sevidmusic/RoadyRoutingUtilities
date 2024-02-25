@@ -516,8 +516,65 @@ trait RequestTestTrait
             $this->requestTestInstance()->url(),
             $this->testFailedMessage(
                 $this->requestTestInstance(),
-                'name',
-                'name() must return the expected Name: ' . $this->expectedName()->__toString(),
+                'url',
+                'url() must return the expected Url: ' . $this->expectedUrl()->__toString(),
+            )
+        );
+    }
+
+    /**
+     * Test that the serverArray() method returns the $_SERVER array.
+     *
+     * @return void
+     *
+     */
+    public function test_serverArray_returns_SERVER_array(): void
+    {
+        $this->assertEquals(
+            $_SERVER,
+            $this->requestTestInstance()->serverArray(),
+            $this->testFailedMessage(
+                $this->requestTestInstance(),
+                'serverArray',
+                'must return the $_SERVER array',
+            )
+        );
+    }
+
+    /**
+     * Test that the postArray() method returns the $_POST array.
+     *
+     * @return void
+     *
+     */
+    public function test_postArray_returns_POST_array(): void
+    {
+        $this->assertEquals(
+            $_POST,
+            $this->requestTestInstance()->postArray(),
+            $this->testFailedMessage(
+                $this->requestTestInstance(),
+                'postArray',
+                'must return the $_POST array',
+            )
+        );
+    }
+
+    /**
+     * Test that the getArray() method returns the $_GET array.
+     *
+     * @return void
+     *
+     */
+    public function test_getArray_returns_GET_array(): void
+    {
+        $this->assertEquals(
+            $_GET,
+            $this->requestTestInstance()->getArray(),
+            $this->testFailedMessage(
+                $this->requestTestInstance(),
+                'getArray',
+                'must return the $_GET array',
             )
         );
     }
